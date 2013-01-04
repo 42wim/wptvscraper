@@ -5,7 +5,7 @@ createwptvxml.pl is a simple screenscaper perl script which logs in on the
 WeepeeTV site and creates an XML containing the necessary m3u8 stream URLS.
 
 This XML can be used to feed other applications on your local network
-e.g. for use with VLC (see my wptv_vlcplugin)
+e.g. for use with VLC (see weepeetv.lua)
 
 The xml file format is as follows:
 
