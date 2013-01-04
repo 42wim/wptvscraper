@@ -1,3 +1,5 @@
+createwptvxml.pl
+================
 
 createwptvxml.pl is a simple screenscaper perl script which logs in on the 
 WeepeeTV site and creates an XML containing the necessary m3u8 stream URLS.
@@ -18,6 +20,8 @@ The xml file format is as follows:
 </items>
 ```
 
+config
+------
 To run the script change the variables on top of createwptvmxl.pl
 ```perl
 ## change these variables
@@ -28,4 +32,25 @@ my $XMLFILE="wptv.xml";
 my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmKzoom","tvllogosmall","livetv");
 ```
 
+weepeetv.lua
+============
+weepeetv.lua is addon for VLC which uses the wptv.xml created by createwptvxml.pl
+
+config
+------
+Change the url to your webserver containing wptv.xml
+
+```lua
+local tree = simplexml.parse_url("http://yourserver.url/wptv.xml")
+```
+
+Put the file in the lua/sd directory of your vlc install.
+To access it go to View - Playlist - Internet - WeePee TV
+
+See http://blog.42.be/2012/12/weepeetv-and-vlc.html for more info
+
+
 Contact: @42wim
+
+
+
