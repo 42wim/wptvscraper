@@ -7,6 +7,7 @@ e.g. for use with VLC (see my wptv_vlcplugin)
 
 The xml file format is as follows:
 
+```html
 <?xml version='1.0'?>
 <items>
 <item>
@@ -15,15 +16,16 @@ The xml file format is as follows:
 <h264>https://weepeetv.my-stream.eu/channel/uuid/channeluuid/stream.m3u8</h264>
 </item>
 </items>
-
+```
 
 To run the script change the variables on top of createwptvmxl.pl
-
+```perl
 ## change these variables
 my $ACCOUNT="uxxxxxx";
 my $PASSWORD="secret";
 my $CURL="/usr/bin/curl";
 my $XMLFILE="wptv.xml";
 my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmKzoom","tvllogosmall","livetv");
+```
 
 Contact: @42wim
