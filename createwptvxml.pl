@@ -56,7 +56,7 @@ while(<$fh>) {
 	}
 	if (/img src=\"(.*?)\"/) {
 		$img=$1;
-		if ($img=~/channels\/(.*?)\./) { 
+		if ($img=~/channellogos\/app\/(.*?)\./) {
 			$zender=$1; 
 			$channelsdyn{$zender}{"img"}=$img;
 			&curldl($url,$zender);
