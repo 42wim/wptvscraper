@@ -23,7 +23,7 @@ my $ACCOUNT="uxxxxx";
 my $PASSWORD="secret";
 my $CURL="/usr/bin/curl";
 my $XMLFILE="wptv.xml";
-my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmKzoom","tvllogosmall","livetv");
+my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmkzoom","tvl","lifetv");
 
 ## here be dragons
 ##############################
