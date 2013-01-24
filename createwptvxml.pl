@@ -17,19 +17,21 @@
 use strict;
 use warnings;
 use File::Temp qw/ tempfile tempdir /;
+use JSON;
 
 ## change these variables
 my $ACCOUNT="uxxxxx";
 my $PASSWORD="secret";
 my $CURL="/usr/bin/curl";
 my $XMLFILE="wptv.xml";
-my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmkzoom","tvl","lifetv");
+my $MYTHTVFILE="mythtv_playlist.m3u";
+#choose the channelnumber from which weepeetv will start
+my $MYTHTVSTARTCHANNEL=1;
 
 ## here be dragons
 ##############################
 my $fh;
 my $filename;
-
 
 my %channelsdyn=();
 
@@ -41,52 +43,31 @@ my $XMLTEMPLATE=qq~
 </item>
 ~;
 
-($fh,$filename)=tempfile();
+my $MYTHTVTEMPLATE=qq~
+##zender##
+##url##
+~;
 
-&login();
+MAIN: {
+	my $zender;
+	my $url;
+	my $img;
+	my $jsonstring;
+	my $jsondecode;
 
-my $zender;
-my $url;
-my $img;
-my $globalcounter=0;
-my $globaluuid;
-while(<$fh>) {
-	if (/.*?href=\"(https.*?)"/) {
-		$url=$1;
-	}
-	if (/img src=\"(.*?)\"/) {
-		$img=$1;
-		if ($img=~/channellogos\/app\/(.*?)\./) {
-			$zender=$1; 
-			$channelsdyn{$zender}{"img"}=$img;
-			&curldl($url,$zender);
-			
-		}
-	}
-}
-close($fh);
-unlink($filename);
+	($fh,$filename)=tempfile();
+	&login();
 
-sub curldl {
-	my $url=shift;
-	my $zender=shift;
-	unless ($globalcounter) {
-		#we need to fetch one channel, afterwards we can generate the URL ourselves.
-		print "fetching $zender on $url to get the UUID\n";
-		open(C,$CURL." -s -b ~/.wpcookie -c ~/.wpcookie ".$url."|");
-		while(<C>) {
-			if (/src: \"(https:.*?channel\/)(.*?)(\/.*?m3u8).*/) {
-				$channelsdyn{$zender}{"url"}=$1."/".$2.$3;
-				$globaluuid=$2;
-			}
-		}
-		close(C);
-		$globalcounter++;
+	$jsonstring=<$fh>;
+	close($fh);
+	$jsondecode = JSON->new->utf8->decode($jsonstring);
+	foreach my $key (@{$jsondecode}) {
+		$channelsdyn{$key->{name}}{"img"}=$key->{logo_url};
+		$channelsdyn{$key->{name}}{"url"}=$key->{m3u8};
 	}
-	if ($url=~/.*play\/(.*)/) {
-		print "adding $zender to xml\n";
-		$channelsdyn{$zender}{"url"}="https://weepeetv.my-stream.eu/channel/".$globaluuid."/".$1."/stream.m3u8";
-	}
+	&createxml();
+	&createmythtv();
+
 }
 
 sub login {
@@ -104,18 +85,34 @@ sub login {
 	system($CURL." -o /dev/null -s -b ~/.wpcookie -c ~/.wpcookie https://weepeetv.my-stream.eu/");
 	system($CURL." -o /dev/null -s -b ~/.wpcookie -c ~/.wpcookie https://weepeetv.my-stream.eu/channels/");
 	print "fetching channels\n";
-	system($CURL." -o ".$filename." -s -b ~/.wpcookie -c ~/.wpcookie https://weepeetv.my-stream.eu/channels.html");
+	system($CURL." -o ".$filename." -s -b ~/.wpcookie -c ~/.wpcookie https://weepeetv.my-stream.eu/channels.json");
 }
 
-open(F,"> $XMLFILE");
-print F "<?xml version='1.0'?><items>";
-foreach my $zender (@sort) {
-#	print "generating xml file\n";
-	my $t=$XMLTEMPLATE;
-	$t=~s/##url##/$channelsdyn{$zender}{"url"}/g;
-	$t=~s/##img##/$channelsdyn{$zender}{"img"}/g;
-	$t=~s/##zender##/$zender/g;
-	print F $t;
+sub createxml {
+	open(F,"> $XMLFILE");
+	print F "<?xml version='1.0'?><items>";
+	foreach my $zender (sort(keys %channelsdyn)) {
+	#	print "generating xml file\n";
+		my $t=$XMLTEMPLATE;
+		$t=~s/##url##/$channelsdyn{$zender}{"url"}/g;
+		$t=~s/##img##/$channelsdyn{$zender}{"img"}/g;
+		$t=~s/##zender##/$zender/g;
+		print F $t;
+	}
+	print F "</items>";
+	close(F);
 }
-print F "</items>";
-close(F);
+
+sub createmythtv {
+	open(F,"> $MYTHTVFILE");
+	print F "#EXTM3U\n";
+	my $count=$MYTHTVSTARTCHANNEL;
+	foreach my $zender (sort(keys %channelsdyn)) {
+		$count ++;
+		my $t=$MYTHTVTEMPLATE;
+		print F "#EXTINF:0,$count - $zender \n";
+		print F $channelsdyn{$zender}{"url"};
+		print F "\n";
+	}
+	close(F);
+}
