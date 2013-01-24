@@ -7,6 +7,8 @@ WeepeeTV site and creates an XML containing the necessary m3u8 stream URLS.
 This XML can be used to feed other applications on your local network
 e.g. for use with VLC (see weepeetv.lua)
 
+it now also creates a mythtv compatible playlist (thanks to @stevencruysberg)
+
 The xml file format is as follows:
 
 ```html
@@ -20,6 +22,20 @@ The xml file format is as follows:
 </items>
 ```
 
+The mythtv format is as follows:
+
+```
+#EXTM3U
+#EXTINF:0,1 - channel1 
+https://weepeetv.my-stream.eu/channel/uuid/channeluuid/stream.m3u8
+#EXTINF:0,2 - channel2 
+https://weepeetv.my-stream.eu/channel/uuid/channeluuid/stream.m3u8
+```
+
+requirements
+------------
+JSON needed
+
 config
 ------
 To run the script change the variables on top of createwptvmxl.pl
@@ -29,7 +45,9 @@ my $ACCOUNT="uxxxxxx";
 my $PASSWORD="secret";
 my $CURL="/usr/bin/curl";
 my $XMLFILE="wptv.xml";
-my @sort=("een","canvas","bbc1","bbc2","acht","vtm","2be","vitaya","jim","ketnet","bbcentertainment","kanaalz","vtmKzoom","tvllogosmall","livetv");
+my $MYTHTVFILE="mythtv_playlist.m3u";
+#choose the channelnumber from which weepeetv will start
+my $MYTHTVSTARTCHANNEL=1;
 ```
 
 weepeetv.lua
