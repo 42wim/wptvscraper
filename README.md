@@ -32,6 +32,9 @@ https://weepeetv.my-stream.eu/channel/uuid/channeluuid/stream.m3u8
 https://weepeetv.my-stream.eu/channel/uuid/channeluuid/stream.m3u8
 ```
 
+More information about mythtv setup (dutch) see
+https://docs.google.com/a/richardstraat.homedns.org/document/d/1dLV-EQzqPGvjfYmZfCwUZAMeuNk5k0cIX4Pu_DSF7Bo/edit?pli=1
+
 requirements
 ------------
 JSON needed
