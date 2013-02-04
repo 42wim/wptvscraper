@@ -62,6 +62,8 @@ MAIN: {
 	close($fh);
 	$jsondecode = JSON->new->decode($jsonstring);
 	foreach my $key (@{$jsondecode}) {
+		my $channel=$key->{name};
+		$channel =~ s/ /_/g;
 		$channelsdyn{$key->{name}}{"img"}=$key->{logo_url};
 		$channelsdyn{$key->{name}}{"url"}=$key->{m3u8};
 	}
