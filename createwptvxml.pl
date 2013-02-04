@@ -60,7 +60,7 @@ MAIN: {
 
 	$jsonstring=<$fh>;
 	close($fh);
-	$jsondecode = JSON->new->utf8->decode($jsonstring);
+	$jsondecode = JSON->new->decode($jsonstring);
 	foreach my $key (@{$jsondecode}) {
 		$channelsdyn{$key->{name}}{"img"}=$key->{logo_url};
 		$channelsdyn{$key->{name}}{"url"}=$key->{m3u8};
