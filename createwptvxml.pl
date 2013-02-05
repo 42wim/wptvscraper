@@ -113,6 +113,7 @@ sub createmythtv {
 		$count ++;
 		my $t=$MYTHTVTEMPLATE;
 		print F "#EXTINF:0,$count - $zender \n";
+		print F "#EXTMYTHTV:xmltvid=$zender \n";
 		print F $channelsdyn{$zender}{"url"};
 		print F "\n";
 	}
